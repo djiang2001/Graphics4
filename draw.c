@@ -21,12 +21,13 @@ void add_circle( struct matrix *edges,
                  double r, double step ) {
 
   double t,x0,x1,y0,y1;
-
   for(t = 0;t <= 1; t += step){
     x0 = r * cos(2 * M_PI * t) + cx;
     x1 = r * cos(2 * M_PI * (t + step))+ cx;
     y0 = r * sin(2 * M_PI * t) + cy;
     y1 = r * sin(2 * M_PI * (t + step))+ cy;
+
+    add_edge(edges,x0,y0,cz,x1,y1,cz);
   }
 }
 
@@ -53,6 +54,30 @@ void add_curve( struct matrix *edges,
                 double x2, double y2, 
                 double x3, double y3, 
                 double step, int type ) {
+  struct matrix *x;
+  struct matrix *y;
+  double ax,bx,cx,dx,ay,by,cy,dy,t,xs,ys,xe,ye;
+
+  x = generate_curve_coefs(x0,x1,x2,x3,type);
+  y = generate_curve_coefs(y0,y1,y2,y3,type);
+
+  ax = x->m[0][0];
+  bx = x->m[1][0];
+  cx = x->m[2][0];
+  dx = x->m[3][0];
+
+  ay = y->m[0][0];
+  by = y->m[1][0];
+  cy = y->m[2][0];
+  dy = y->m[3][0];
+
+  for(t = 0; t < 1; t += step){
+    xs = ax * pow(t,3) + bx * pow(t,2) + cx * t + dx;
+    ys = ay * pow(t,3) + by * pow(t,2) + cy * t + dy;
+    xe = ax * pow(t + step,3) + bx * pow(t + step,2) + cx * (t + step) + dx;
+    ye = ay * pow(t + step,3) + by * pow(t + step,2) + cy * (t + step) + dy;
+    add_edge(edges,xs,ys,0,xe,ye,0);
+  }
 }
 
 
