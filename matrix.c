@@ -1,3 +1,5 @@
+
+
 /*==========================================
   A matrix will be a 4xN array of doubles
   Each column will represent an [x, y, z, 1] point.
@@ -71,7 +73,28 @@ struct matrix * make_hermite() {
   ====================*/
 struct matrix * generate_curve_coefs( double p0, double p1,
                                       double p2, double p3, int type) {
-  return NULL;
+  struct matrix *m;
+  struct matrix * m2 = new_matrix(4,1);
+  if(!type){//hermite
+    m = make_hermite();
+
+    m2->m[1][0] = p0;
+    m2->m[2][0] = p1;
+    m2->m[3][0] = p2;
+    m2->m[4][0] = p3;
+    matrix_mult(m,m2);
+
+  }else{//bezier
+    m = make_bezier();
+
+    m2->m[1][0] = p0;
+    m2->m[2][0] = p1;
+    m2->m[3][0] = p2;
+    m2->m[4][0] = p3;
+    matrix_mult(m,m2);
+  }
+
+  return m2;
 }
 
 /*======== struct matrix * make_translate() ==========
